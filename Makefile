@@ -1,4 +1,4 @@
-MSI_JSON_UTILS = msi_json_arrayops
+MSI_JSON_UTILS = msi_json_arrayops msi_json_objops
 MSI_ADMIN_UTILS = msi_unmount
 
 MAKEFLAGS += --no-print-directory
