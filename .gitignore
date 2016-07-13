@@ -1,1 +1,3 @@
 *.so
+build/*
+packaging/rit-irods-microservices.list
