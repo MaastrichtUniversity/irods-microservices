@@ -15,7 +15,14 @@ extern "C" {
 
         const char *in_env_var = parseMspForStr( env_var );
 
+        if( ! in_env_var ) {
+            rodsLog(LOG_ERROR,"msi_getenv - invalid env_var");
+            return SYS_INVALID_INPUT_PARAM;
+        }
+
         fillStrInMsParam(result, std::getenv(in_env_var));
+
+        return 0;
     }
 
     irods::ms_table_entry* plugin_factory() {
