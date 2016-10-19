@@ -108,3 +108,4 @@ END_POSTREMOVE
 f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libmsi_http_send_file.so ./msi_http_send_file/libmsi_http_send_file.so
 f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libmsi_json_arrayops.so ./msi_json_arrayops/libmsi_json_arrayops.so
 f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libmsi_json_objops.so ./msi_json_objops/libmsi_json_objops.so
+f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libmsi_getenv.so ./msi_getenv/libmsi_getenv.so
