@@ -7,7 +7,9 @@ if [ "$DETECTEDOS" == "Ubuntu" ] ; then
 elif [ "$DETECTEDOS" == "Debian" ] ; then
     OSVERSION=`cat /etc/debian_version | awk -F= '{print $1}'`
 elif [ "$DETECTEDOS" == "RedHatCompatible" ] ; then
-    OSVERSION=`awk '{print $3}' /etc/redhat-release`
+    OSVERSION=`awk '{print $7}' /etc/redhat-release`
+elif [ "$DETECTEDOS" == "CentOS" ] ; then
+    OSVERSION=`awk '{split($4,a,"."); print a[1]"."a[2]}' /etc/centos-release` # Use split to take only the major and minor version
 elif [ "$DETECTEDOS" == "SuSE" ] ; then
     OSVERSION=`grep VERSION /etc/SuSE-release | awk '{print $3}'`
 elif [ "$DETECTEDOS" == "Solaris" ] ; then

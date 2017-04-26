@@ -2,7 +2,9 @@
 
 # detect operating system
 UNAMERESULTS=`uname`
-if [ -f "/etc/redhat-release" ]; then       # CentOS and RHEL and Fedora
+if [ -f "/etc/centos-release" ]; then       # CentOS (the order matters here, since CentOS has both /etc/centos- and /etc/redhat-release files)
+    DETECTEDOS="CentOS"
+elif [ -f "/etc/redhat-release" ]; then     # RHEL and Fedora
     DETECTEDOS="RedHatCompatible"
 elif [ -f "/etc/SuSE-release" ]; then       # SuSE
     DETECTEDOS="SuSE"

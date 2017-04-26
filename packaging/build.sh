@@ -214,18 +214,18 @@ fi
 # build package
 cd $TOPLEVEL
 EPMCMD=/usr/bin/epm
-if [ "$DETECTEDOS" == "RedHatCompatible" ] ; then # CentOS and RHEL and Fedora
+if [ "$DETECTEDOS" == "RedHatCompatible" ] || [ "$DETECTEDOS" == "CentOS" ] ; then # CentOS and RHEL and Fedora
     echo "${text_green}${text_bold}Running EPM :: Generating $DETECTEDOS RPMs${text_reset}"
     EXTENSION="rpm"
     epmvar="REDHAT"
     ostype=`awk '{print $1}' /etc/redhat-release`
-    osversion=`awk '{print $3}' /etc/redhat-release`
+    osversion=$DETECTEDOSVERSION
     if [ "$ostype" == "CentOS" -a "$osversion" \> "6" ]; then
         epmosversion="CENTOS6"
-        SUFFIX="centos6"
+        SUFFIX="el${osversion}"
     else
         epmosversion="NOTCENTOS6"
-        SUFFIX="centos5"
+        SUFFIX="el5"
     fi
     $EPMCMD $EPMOPTS -f rpm $EPM_PACKAGENAME RPM=true $epmosversion=true $LISTFILE
 
