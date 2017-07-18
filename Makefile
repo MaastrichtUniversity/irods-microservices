@@ -1,6 +1,6 @@
 MSI_JSON_UTILS = msi_json_arrayops msi_json_objops
 MSI_HTTP_UTILS = msi_http_send_file
-MSI_ADMIN_UTILS = msi_unmount msi_getenv
+MSI_ADMIN_UTILS = msi_unmount msi_getenv msiput_dataobj_or_coll
 
 MAKEFLAGS += --no-print-directory
 
