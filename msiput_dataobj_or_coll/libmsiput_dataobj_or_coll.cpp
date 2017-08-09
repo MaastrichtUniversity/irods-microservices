@@ -125,7 +125,7 @@ irods::error put_all_the_files(
                                            _root,
                                            _tgt_coll );
             rodsLog( 
-                LOG_ERROR,
+                LOG_DEBUG,
                 "put_all_the_files :: create coll [%s]", 
                 logical_path.c_str() );
 
