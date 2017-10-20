@@ -109,3 +109,5 @@ f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libm
 f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libmsi_json_arrayops.so ./msi_json_arrayops/libmsi_json_arrayops.so
 f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libmsi_json_objops.so ./msi_json_objops/libmsi_json_objops.so
 f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libmsi_getenv.so ./msi_getenv/libmsi_getenv.so
+f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libmsi_time_ts2str.so ./msi_http_send_file/libmsi_time_ts2str.so
+f 644 $OS_IRODS_ACCT $OS_IRODS_ACCT ${IRODS_HOME_DIR}/plugins/microservices/libmsiput_dataobj_or_coll.so ./msi_http_send_file/libmsiput_dataobj_or_coll.so
