@@ -1,10 +1,7 @@
 myTestRule {
-   #                       source coll or obj,     tgt resc,   options,      target collection
-   #remote("ires","") { # Disabling the ingest zone needs to be executed on remote ires server 
-       *err = errorcode( msiput_dataobj_or_coll("/mnt/ingest/zones/tense-tortoise/", "demoResc", "forceFlag=", "/nlmumc/home/rods/",*real_path));
-       writeLine("stdout","*err + *real_path");
-   #}
+       *err = errorcode( msiput_dataobj_or_coll("/mnt/ingest/zones/worried-white-clawed/", "replRescUM01", "forceFlag=", "/nlmumc/projects/P000000001/C000000003", *real_path));
+       writeLine("stdout","Error: *err");
 }
+
 INPUT null
 OUTPUT ruleExecOut
-

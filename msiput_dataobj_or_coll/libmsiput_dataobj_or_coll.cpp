@@ -143,9 +143,8 @@ irods::error put_all_the_files(
             } else {
                 fs::directory_iterator end_iter;
                 fs::directory_iterator dir_itr( _path );
-                for( ; 
-                     dir_itr != end_iter; 
-                     ++dir_itr ) {
+
+                for( ; dir_itr != end_iter; ++dir_itr ) {
 
                     // recurse on this new directory
                     irods::error ret = put_all_the_files( 
@@ -157,16 +156,10 @@ irods::error put_all_the_files(
                                            _tgt_coll,
                                            _out_path );
                     if ( !ret.ok() ) {
-                        std::stringstream msg;
-                        msg << "failed on [";
-                        msg << dir_itr->path().string();
-                        msg << "]";
-                        final_error = PASSMSG( msg.str(), final_error );
+                        return PASS( ret );
                     }
-
-                } // for dir_itr
-
-            } // else
+                }
+            }
 
         }
         else if ( fs::is_regular_file( _path ) ) {
