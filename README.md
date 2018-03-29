@@ -14,7 +14,11 @@ make
 
 ## Packaging
 
-Don't forget to add a new microservice to `packaging/rit-irods-microservices.list.template`
+Don't forget to:
+* add a new microservice to `packaging/rit-irods-microservices.list.template`
+* update the PLUGINVERSION in `VERSION` file
+
+Then execute
 
 ```
 ./packaging/build.sh
@@ -22,7 +26,7 @@ Don't forget to add a new microservice to `packaging/rit-irods-microservices.lis
 
 ## Releasing
 
-Tag a release, and upload the binary .dev to GitHub.
+Tag a release, and upload the binary .deb and .rpm to GitHub.
  
 ## Acknowledgements
 * Special thanks to the [Donders Institute](https://github.com/Donders-Institute) for sharing of `msi_json_arrayops`, `msi_json_objops` and `msi_time_ts2str`
