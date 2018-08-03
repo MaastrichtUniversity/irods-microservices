@@ -1,9 +1,7 @@
 // =-=-=-=-=-=-=-
-#include "apiHeaderAll.hpp"
-#include "msParam.hpp"
-#include "reGlobalsExtern.hpp"
+#include "irods_error.hpp"
 #include "irods_ms_plugin.hpp"
-#include "reFuncDefs.hpp"
+
 #include "jansson.h"
 
 // =-=-=-=-=-=-=-
@@ -15,7 +13,7 @@
 
 extern "C" {
     // =-=-=-=-=-=-=-
-    int msi_json_arrayops_impl(msParam_t* json_str, msParam_t* val, msParam_t* ops, msParam_t* sizeOrIndex, ruleExecInfo_t* rei) {
+    int msi_json_arrayops(msParam_t* json_str, msParam_t* val, msParam_t* ops, msParam_t* sizeOrIndex, ruleExecInfo_t* rei) {
         using std::cout;
         using std::endl;
         using std::string;
@@ -39,12 +37,12 @@ extern "C" {
             return SYS_INVALID_INPUT_PARAM;
         }
 
-        string strOps(inOps); 
+        string strOps(inOps);
 
         json_error_t error;
         json_t *root;
 
-        // try to make initial inJsonStr if it's an empty string 
+        // try to make initial inJsonStr if it's an empty string
         if ( strcmp(inJsonStr, "") == 0 ) {
             inJsonStr = "[]";
         }
@@ -100,11 +98,13 @@ extern "C" {
         } else if ( strOps == "get" ) {
             json_t *elem = json_array_get(root, inIdx);
 
-            if ( json_typeof(elem) == JSON_OBJECT || json_typeof(elem) == JSON_OBJECT ) {
-                fillStrInMsParam(val, json_dumps(elem,0));
-            } else { 
+            /* output a string directly, but encode other json types using json_dumps with JSON_ENCODE_ANY set */
+            if ( json_is_string(elem)) {
                 fillStrInMsParam(val, json_string_value(elem));
+            } else {
+                fillStrInMsParam(val, json_dumps(elem, JSON_ENCODE_ANY));
             }
+
 
             outSizeOrIndex = inIdx;
         }
@@ -118,12 +118,23 @@ extern "C" {
         return 0;
     }
 
-    irods::ms_table_entry* plugin_factory() {
-        irods::ms_table_entry* msvc = new irods::ms_table_entry(4);
-        
-        msvc->add_operation("msi_json_arrayops_impl", "msi_json_arrayops");
-        
-        return msvc;
-    }
+  irods::ms_table_entry* plugin_factory() {
+    irods::ms_table_entry* msvc = new irods::ms_table_entry(4);
+
+    msvc->add_operation<
+      msParam_t*,
+      msParam_t*,
+      msParam_t*,
+      msParam_t*,
+      ruleExecInfo_t*>("msi_json_arrayops",
+               std::function<int(
+                     msParam_t*,
+                     msParam_t*,
+                     msParam_t*,
+                     msParam_t*,
+                     ruleExecInfo_t*)>(msi_json_arrayops));
+
+    return msvc;
+  }
 
 } // extern "C"
