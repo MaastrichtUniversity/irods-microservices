@@ -1,7 +1,9 @@
 // =-=-=-=-=-=-=-
-#include "apiHeaderAll.hpp"
-#include "msParam.hpp"
-#include "reGlobalsExtern.hpp"
+#include "irods_error.hpp"
+#include "rsDataObjClose.hpp"
+#include "rsDataObjOpen.hpp"
+#include "rsDataObjRead.hpp"
+//#include "reGlobalsExtern.hpp"
 #include "irods_ms_plugin.hpp"
 
 // =-=-=-=-=-=-=-
@@ -56,11 +58,11 @@ class irodsCurl {
         memset(&openedSource, 0, sizeof(openedDataObjInp_t));
         snprintf(readData.path, MAX_NAME_LEN, "%s", objectPath);
         readData.desc = 0;
-	    readData.rsComm = rsComm;
+        readData.rsComm = rsComm;
 
         // Set up easy handler
         curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt( curl, CURLOPT_PROTOCOLS,  CURLPROTO_HTTP | CURLPROTO_HTTPS);
+        curl_easy_setopt(curl, CURLOPT_PROTOCOLS,  CURLPROTO_HTTP | CURLPROTO_HTTPS);
         curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
         curl_easy_setopt(curl, CURLOPT_READDATA, &readData);
         curl_easy_setopt(curl, CURLOPT_READFUNCTION, &irodsCurl::my_read_obj);
@@ -140,7 +142,9 @@ class irodsCurl {
         openedFile.len = bytesBuf.len;
 
         // bytesRead = 0;
+        //TODO: At Paul: during compilation warning: implicit conversion changes signedness: 'int' to 'size_t' (aka 'unsigned long')
         bytesRead = rsDataObjRead(readData->rsComm, &openedFile, &bytesBuf);
+        //TODO: At Paul: during compilation warning: comparison of unsigned expression < 0 is always false
         if (bytesRead < 0) {
             rodsLog(LOG_ERROR, "irods_http_send_file: Problem reading iRODS object. Status =  %d", bytesRead);
             return CURL_READFUNC_ABORT;
@@ -158,6 +162,7 @@ extern "C" {
 // 1. Write a standard issue microservice
     int irods_http_send_file( msParam_t* url, msParam_t* src_obj, ruleExecInfo_t* rei ) {
         dataObjInp_t dataObjInp, *myDataObjInp;
+        //TODO: At Paul: during compilation "warning: unused variable 'myUrl'"
         char *myUrl;
 
         // Sanity checks
@@ -188,21 +193,27 @@ extern "C" {
 // =-=-=-=-=-=-=-
 // 2.  Create the plugin factory function which will return a microservice
 //     table entry
-    irods::ms_table_entry*  plugin_factory() {
+    irods::ms_table_entry* plugin_factory() {
         // =-=-=-=-=-=-=-
         // 3.  allocate a microservice plugin which takes the number of function
         //     params as a parameter to the constructor
-        irods::ms_table_entry* msvc = new irods::ms_table_entry( 2 );
+        irods::ms_table_entry* msvc = new irods::ms_table_entry(2);
 
         // =-=-=-=-=-=-=-
         // 4. add the microservice function as an operation to the plugin
         //    the first param is the name / key of the operation, the second
         //    is the name of the function which will be the microservice
-        msvc->add_operation( "irods_http_send_file", "irods_http_send_file" );
-
+        msvc->add_operation<
+                msParam_t*,
+                msParam_t*,
+                ruleExecInfo_t*>("irods_http_send_file",
+                                 std::function<int(
+                                         msParam_t*,
+                                         msParam_t*,
+                                         ruleExecInfo_t*)>(irods_http_send_file));
         // =-=-=-=-=-=-=-
         // 5. return the newly created microservice plugin
         return msvc;
     }
 
-}	// extern "C"
+}   // extern "C"

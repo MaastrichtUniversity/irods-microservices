@@ -1,9 +1,7 @@
 // =-=-=-=-=-=-=-
-#include "apiHeaderAll.hpp"
-#include "msParam.hpp"
-#include "reGlobalsExtern.hpp"
+#include "irods_error.hpp"
 #include "irods_ms_plugin.hpp"
-#include "reFuncDefs.hpp"
+
 #include "jansson.h"
 
 // =-=-=-=-=-=-=-
@@ -14,8 +12,8 @@
 #include <boost/algorithm/string.hpp>
 
 extern "C" {
-    // =-=-=-=-=-=-=-
-    int msi_json_objops_impl(msParam_t* json_str, msParam_t* kvp, msParam_t* ops, ruleExecInfo_t* rei) {
+// =-=-=-=-=-=-=-
+    int msi_json_objops(msParam_t* json_str, msParam_t* kvp, msParam_t* ops, ruleExecInfo_t* rei) {
         using std::cout;
         using std::endl;
         using std::string;
@@ -45,12 +43,12 @@ extern "C" {
         keyValPair_t *inKVP;
         inKVP = (keyValPair_t*) kvp->inOutStruct;
 
-        string strOps(inOps); 
+        string strOps(inOps);
 
         json_error_t error;
         json_t *root;
 
-        // try to make initial inJsonStr if it's an empty string 
+        // try to make initial inJsonStr if it's an empty string
         if ( strcmp(inJsonStr, "") == 0 ) {
             inJsonStr = "{}";
         }
@@ -75,25 +73,25 @@ extern "C" {
                 jval = json_loads(inVal, 0, &error);
                 if ( ! jval ) jval = json_string(inVal);
             }
- 
+
             // try to find objects in the key
             json_t *data = json_object_get(root, inKey);
 
             if ( strOps == "get" ) {
-               if ( json_is_null(data) ) {
-                   inKVP->value[ik] = null_cstr;
-               } else if ( json_is_true(data) ) {
-                   inKVP->value[ik] = true_cstr;
-               } else if ( json_is_false(data) ) {
-                   inKVP->value[ik] = false_cstr;
-               } else if ( json_is_string(data) ) { 
-                   const char* val_str = json_string_value(data);
-                   char *val_cstr = new char[strlen(val_str) + 1];
-                   strcpy(val_cstr, val_str);
-                   inKVP->value[ik] = val_cstr;
-               } else {
-                   inKVP->value[ik] = json_dumps(data,0);
-               }
+                if ( json_is_null(data) ) {
+                    inKVP->value[ik] = null_cstr;
+                } else if ( json_is_true(data) ) {
+                    inKVP->value[ik] = true_cstr;
+                } else if ( json_is_false(data) ) {
+                    inKVP->value[ik] = false_cstr;
+                } else if ( json_is_string(data) ) {
+                    const char* val_str = json_string_value(data);
+                    char *val_cstr = new char[strlen(val_str) + 1];
+                    strcpy(val_cstr, val_str);
+                    inKVP->value[ik] = val_cstr;
+                } else {
+                    inKVP->value[ik] = json_dumps(data,0);
+                }
             } else if ( strOps == "add" ) {
                 if (json_is_array( data )) {
                     json_array_append_new(data, jval);
@@ -131,9 +129,18 @@ extern "C" {
 
     irods::ms_table_entry* plugin_factory() {
         irods::ms_table_entry* msvc = new irods::ms_table_entry(3);
-        
-        msvc->add_operation("msi_json_objops_impl", "msi_json_objops");
-        
+
+        msvc->add_operation<
+                msParam_t*,
+                msParam_t*,
+                msParam_t*,
+                ruleExecInfo_t*>("msi_json_objops",
+                                 std::function<int(
+                                         msParam_t*,
+                                         msParam_t*,
+                                         msParam_t*,
+                                         ruleExecInfo_t*)>(msi_json_objops));
+
         return msvc;
     }
 

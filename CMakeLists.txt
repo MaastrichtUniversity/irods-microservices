@@ -85,13 +85,13 @@ include_directories("/usr/include/irods")
 # Generate the shared Library (= binary) from the source code
 # Note: unlike an Executable, a library does not contain a main method. It just contains the classes
 add_library(msi_json_arrayops         SHARED msi_json_arrayops/libmsi_json_arrayops.cpp)
-#add_library(msi_json_objops           SHARED msi_json_objops/libmsi_json_objops.cpp)
-#add_library(msi_http_send_file        SHARED msi_http_send_file/msi_http_send_file.cpp)
+add_library(msi_json_objops           SHARED msi_json_objops/libmsi_json_objops.cpp)
+add_library(msi_http_send_file        SHARED msi_http_send_file/msi_http_send_file.cpp)
 
 # Link the generated library to dependency libraries
 target_link_libraries(msi_json_arrayops       LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
-#target_link_libraries(msi_json_objops         LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
-#target_link_libraries(msi_http_send_file      LINK_PUBLIC ${Boost_LIBRARIES})
+target_link_libraries(msi_json_objops         LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(msi_http_send_file      LINK_PUBLIC ${Boost_LIBRARIES})
 
 
 #Set the location for library installation
