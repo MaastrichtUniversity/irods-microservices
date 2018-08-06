@@ -3,7 +3,6 @@
 #include "rsDataObjClose.hpp"
 #include "rsDataObjOpen.hpp"
 #include "rsDataObjRead.hpp"
-//#include "reGlobalsExtern.hpp"
 #include "irods_ms_plugin.hpp"
 
 // =-=-=-=-=-=-=-

@@ -1,7 +1,5 @@
 // =-=-=-=-=-=-=-
-#include "apiHeaderAll.hpp"
-#include "msParam.hpp"
-#include "reGlobalsExtern.hpp"
+#include "irods_error.hpp"
 #include "irods_ms_plugin.hpp"
 
 // =-=-=-=-=-=-=-
@@ -23,7 +21,7 @@ extern "C" {
         char tStr[TIME_LEN];
         time_t myTime;
         struct tm *mytm;
-        int status;
+        //int status;
   
         if (rei == NULL || rei->rsComm == NULL) return (SYS_INTERNAL_NULL_INPUT_ERR);
  
@@ -41,17 +39,35 @@ extern "C" {
         snprintf (tStr, TIME_LEN, dateFormat,
                 mytm->tm_year + 1900, mytm->tm_mon + 1, mytm->tm_mday,
                 mytm->tm_hour, mytm->tm_min, mytm->tm_sec);
-        
-        status = fillStrInMsParam (outParam,tStr);
 
-        return(status);
+
+        // TODO: Needs reviewing by Paul
+        // Fix for for compilation errors with clang and iRODS 4.2.3 (RITDEV-277)
+        // Error is "libmsi_time_ts2str.cpp:43:16: error: assigning to 'int' from incompatible type 'void'"
+        // I made this fix according to changes in this msiGetDiffTime (see https://docs.irods.org/4.2.3/doxygen/nre_8systemMS_8cpp_source.html#l00611)
+        // Note: Also commented out 'int(status)' at the top of this msi as part of this fix.
+
+        // status = fillStrInMsParam (outParam,tStr);
+        fillStrInMsParam (outParam,tStr);
+        //return(status);
+        return(0);
+
     }
 
     irods::ms_table_entry* plugin_factory() {
         irods::ms_table_entry* msvc = new irods::ms_table_entry(3);
-        
-        msvc->add_operation("msi_time_ts2str_impl", "msi_time_ts2str");
-        
+
+        msvc->add_operation<
+                msParam_t*,
+                msParam_t*,
+                msParam_t*,
+                ruleExecInfo_t*>("msi_time_ts2str_impl",
+                                 std::function<int(
+                                         msParam_t*,
+                                         msParam_t*,
+                                         msParam_t*,
+                                         ruleExecInfo_t*)>(msi_time_ts2str_impl));
+
         return msvc;
     }
 
