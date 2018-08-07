@@ -1,10 +1,16 @@
-#include "reFuncDefs.hpp"
-#include "microservice.hpp"
-#include "objInfo.hpp"
+// 2018-08-07 Ported this microservice to iRODS 4.2.3
+// Based my changes here on a diff between these two versions on irods/contrib:
+// 4.1 https://github.com/irods/contrib/blob/4-1-stable/microservices/landing_zone_microservices/msiput_dataobj_or_coll/libmsiput_dataobj_or_coll.cpp
+// 4.2 https://github.com/irods/contrib/blob/e31f055dee5e3e8ca76b2ccd6011f684dc2f130c/microservices/landing_zone_microservices/msiput_dataobj_or_coll/libmsiput_dataobj_or_coll.cpp
+
+//#include "reFuncDefs.h"
+#include "irods_ms_plugin.hpp"
+#include "objInfo.h"
 #include "reDataObjOpr.hpp"
-#include "collCreate.hpp"
-#include "dataObjPut.hpp"
+#include "collCreate.h"
+#include "dataObjPut.h"
 #include "collection.hpp"
+#include "rcMisc.h"
 
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
@@ -15,7 +21,7 @@ namespace fs = boost::filesystem;
 
 
 
-void strip_trailing_slash( 
+void strip_trailing_slash(
     std::string& _path ) {
     if( *_path.rbegin() == '/' )
         _path = _path.substr( 0, _path.size()-1 );
@@ -207,86 +213,136 @@ irods::error put_all_the_files(
 
 } // put_all_the_files
 
+// =-=-=-=-=-=-=-
+// 1. Write a standard issue microservice
+int msiput_dataobj_or_coll(
+    msParam_t* _path,
+    msParam_t* _resc,
+    msParam_t* _opts,
+    msParam_t* _tgt_coll,
+    msParam_t* _out_path,
+    ruleExecInfo_t* rei) {
 
-MICROSERVICE_BEGIN(
-    msiput_dataobj_or_coll,
-    STR,        _path,     INPUT,
-    STR,        _resc,     INPUT,
-    STR,        _opts,     INPUT,
-    STR,        _tgt_coll, INPUT,
-    STR,        _out_path, OUTPUT )
-    RE_TEST_MACRO( "    Calling msiput_dataobj_or_coll" );
+    char *path = parseMspForStr(_path);
+    if (!path) {
+        rodsLog(LOG_ERROR, "%s null _path", __FUNCTION__);
+        return SYS_INVALID_INPUT_PARAM;
+    }
+
+    char *resc = parseMspForStr(_resc);
+    if (!resc) {
+        rodsLog(LOG_ERROR, "%s null _resc", __FUNCTION__);
+        return SYS_INVALID_INPUT_PARAM;
+    }
+
+    char *opts = parseMspForStr(_opts);
+    if (!opts) {
+        rodsLog(LOG_ERROR, "%s null _opts", __FUNCTION__);
+        return SYS_INVALID_INPUT_PARAM;
+    }
+
+    char *tgt_coll = parseMspForStr(_tgt_coll);
+    if (!tgt_coll) {
+        rodsLog(LOG_ERROR, "%s null _tgt_coll", __FUNCTION__);
+        return SYS_INVALID_INPUT_PARAM;
+    }
 
     std::string file_name;
-    fs::path inp_path( _path );
-    if( fs::is_directory( inp_path ) ) {
-        file_name = fs::canonical( inp_path ).parent_path( ).string();
+    fs::path inp_path(path);
+    if (fs::is_directory(inp_path)) {
+        file_name = fs::canonical(inp_path).parent_path().string();
 
     }
 
-    std::string tmp_coll( _tgt_coll );
-    strip_trailing_slash( tmp_coll );     
-    int status = rsMkCollR( 
-                     rei->rsComm,
-                     "/",  
-                     tmp_coll.c_str() );
-    if( status < 0 ) {
-        rodsLog( 
-            LOG_ERROR,
-            "msiput_dataobj_or_coll - failed to make collection [%s]",
-            _tgt_coll );
-        RETURN( status );
+    std::string tmp_coll(tgt_coll);
+    strip_trailing_slash(tmp_coll);
+    int status = rsMkCollR(
+            rei->rsComm,
+            "/",
+            tmp_coll.c_str());
+    if (status < 0) {
+        rodsLog(
+                LOG_ERROR,
+                "msiput_dataobj_or_coll - failed to make collection [%s]",
+                _tgt_coll);
+        return status;
 
     }
 
-    rcComm_t* comm = rcConnect(
-                     rei->rsComm->myEnv.rodsHost,
-                     rei->rsComm->myEnv.rodsPort,
-                     rei->rsComm->myEnv.rodsUserName,
-                     rei->rsComm->myEnv.rodsZone,
-                     NO_RECONN, 0 );
-    if( !comm ) {
-        rodsLog( 
-            LOG_ERROR,
-            "msiput_dataobj_or_coll - rcConnect failed" );
-        RETURN( 0 );
+    rcComm_t *comm = rcConnect(
+            rei->rsComm->myEnv.rodsHost,
+            rei->rsComm->myEnv.rodsPort,
+            rei->rsComm->myEnv.rodsUserName,
+            rei->rsComm->myEnv.rodsZone,
+            NO_RECONN, 0);
+    if (!comm) {
+        rodsLog(
+                LOG_ERROR,
+                "msiput_dataobj_or_coll - rcConnect failed");
+        return 0;
     }
 
-    status = clientLogin( 
-                 comm, 
-                 0, 
-                 rei->rsComm->myEnv.rodsAuthScheme );
-    if ( status != 0 ) {
-        rcDisconnect( comm );
-        rodsLog( 
-            LOG_ERROR,
-            "msiput_dataobj_or_coll - client login failed %d",
-            status );
-        RETURN( 0 ); 
+    status = clientLogin(
+            comm,
+            0,
+            rei->rsComm->myEnv.rodsAuthScheme);
+    if (status != 0) {
+        rcDisconnect(comm);
+        rodsLog(
+                LOG_ERROR,
+                "msiput_dataobj_or_coll - client login failed %d",
+                status);
+        return 0;
     }
 
     std::string out_path;
-    irods::error ret = put_all_the_files( 
-                           comm,
-                           inp_path,
-                           file_name,
-                           _resc,
-                           _opts,
-                           _tgt_coll,
-                           out_path );
-    
-    rcDisconnect( comm );
+    irods::error ret = put_all_the_files(
+            comm,
+            inp_path,
+            file_name,
+            resc,
+            opts,
+            tgt_coll,
+            out_path);
 
-    if( !ret.ok() ) {
-        addRErrorMsg( 
-            &rei->rsComm->rError, 
-            STDOUT_STATUS, 
-            ret.result().c_str() );
+    rcDisconnect(comm);
+
+    if (!ret.ok()) {
+        addRErrorMsg(
+                &rei->rsComm->rError,
+                ret.code(),
+                ret.result().c_str());
     }
 
-    _out_path = strdup( out_path.c_str() );
-    
-    RETURN( ret.code() );
+    fillMsParam(_out_path, NULL, STR_MS_T, (void *) out_path.c_str(), NULL);
 
-// cppcheck-suppress syntaxError
-MICROSERVICE_END
+    return ret.code();
+
+}
+
+extern "C"
+// =-=-=-=-=-=-=-
+// 2.  Create the plugin factory function which will return a microservice
+//     table entry
+irods::ms_table_entry* plugin_factory() {
+    // =-=-=-=-=-=-=-
+    // 3.  allocate a microservice plugin which takes the number of function
+    //     params as a parameter to the constructor
+    irods::ms_table_entry* msvc = new irods::ms_table_entry(5);
+    // =-=-=-=-=-=-=-
+    // 4. add the microservice function as an operation to the plugin
+    //    the first param is the name / key of the operation, the second
+    //    is the name of the function which will be the microservice
+    msvc->add_operation(
+            "msiput_dataobj_or_coll",
+            std::function<int(
+                    msParam_t*,
+                    msParam_t*,
+                    msParam_t*,
+                    msParam_t*,
+                    msParam_t*,
+                    ruleExecInfo_t*)>(msiput_dataobj_or_coll));
+    // =-=-=-=-=-=-=-
+    // 5. return the newly created microservice plugin
+    return msvc;
+}
