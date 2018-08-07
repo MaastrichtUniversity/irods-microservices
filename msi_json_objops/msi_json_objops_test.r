@@ -1,3 +1,9 @@
+# Simple rule to test microservice
+#
+# Call with
+#
+# irule -F msi_json_objops_test.r
+
 myTestRule {
 
    *json_str = "";

@@ -13,6 +13,8 @@ cmake_minimum_required(VERSION 3.5.0 FATAL_ERROR)
 
 # Set global CMAKE variables
 # TODO: Determine what is the preferred way of doing this: setting the values here vs. using ENV vars vs. providing them with the -D flag in cmake call
+# Note: Some of the include dirs (like CURL) can automatically be found by CMake at the 'include_directories' step and do not have to be set here.
+#       See https://cmake.org/cmake/help/v3.0/module/FindCURL.html
 set(IRODS_VERSION "4.2.3")
 set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang3.8-0)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
@@ -65,6 +67,9 @@ include_directories("${IRODS_EXTERNALS_FULLPATH_CLANG}/include/c++/v1")
 find_package(Boost REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
+find_package(CURL REQUIRED)
+include_directories(SYSTEM ${CURL_INCLUDE_DIRS})
+
 find_package(Jansson REQUIRED)
 include_directories(SYSTEM ${JANSSON_INCLUDE_DIRS})
 
@@ -83,7 +88,7 @@ add_library(msiput_dataobj_or_coll    SHARED msiput_dataobj_or_coll/libmsiput_da
 
 # Link the generated library to dependency libraries
 target_link_libraries(msi_getenv              LINK_PUBLIC ${Boost_LIBRARIES})
-target_link_libraries(msi_http_send_file      LINK_PUBLIC ${Boost_LIBRARIES})
+target_link_libraries(msi_http_send_file      LINK_PUBLIC ${Boost_LIBRARIES} ${CURL_LIBRARIES})
 target_link_libraries(msi_json_arrayops       LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(msi_json_objops         LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(msi_time_ts2str         LINK_PUBLIC ${Boost_LIBRARIES})

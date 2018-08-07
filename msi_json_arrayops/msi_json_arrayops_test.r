@@ -1,4 +1,15 @@
-myTestRule {
+# Simple rule to test microservice
+#
+# Call with
+#
+# irule -F msi_json_arrayops_test.r
+
+irule_dummy() {
+    writeLine("stdout", "Testing msi_json_arrayops ...");
+    IRULE_msi_json_arrayops_test();
+}
+
+IRULE_msi_json_arrayops_test {
 
    *json_str = '[]';
 
@@ -21,14 +32,14 @@ myTestRule {
    #*ec = errorcode( msi_json_arrayops(*json_str, *item7, "add", *size) );
    *ec = errorcode( msi_json_arrayops(*json_str, *item8, "add", *size) );
 
-    # adding null does not supported? 
+   # adding null does not supported?
    #*ec = errorcode( msi_json_arrayops(*json_str, *item5, "add", *size) );
 
-    # adding those will append additional boolean values to array 
+   # adding those will append additional boolean values to array
    #*ec = errorcode( msi_json_arrayops(*json_str, *item6, "add", *size) );
    #*ec = errorcode( msi_json_arrayops(*json_str, *item7, "add", *size) );
 
-    # adding those will not change array because they have been presented in it
+   # adding those will not change array because they have been presented in it
    #*ec = errorcode( msi_json_arrayops(*json_str, *item1, "add", *size) );
    #*ec = errorcode( msi_json_arrayops(*json_str, *item2, "add", *size) );
    #*ec = errorcode( msi_json_arrayops(*json_str, *item3, "add", *size) );
@@ -63,4 +74,5 @@ myTestRule {
    writeLine("stdout", *json_str ++ " " ++ *item1 ++ " at idx: " ++ str(*idx));
 
 }
+
 OUTPUT ruleExecOut
