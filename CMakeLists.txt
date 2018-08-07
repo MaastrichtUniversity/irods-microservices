@@ -56,7 +56,9 @@ find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
 message(STATUS "Building for irods-server version ${IRODS_VERSION}")
 
 # Set the output folder where your program will be created
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
+# CMAKE_SOURCE_DIR is the directory where the CMakeLists.txt file is located
+# We will create a bin/ directory within the build/ directory
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
