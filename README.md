@@ -9,9 +9,11 @@ irods-dev, libssl-dev libcurl4-openssl-dev
 ## Building
 
 ```
-cd /microservices
-cmake -H. -Bbuild
-cmake --build build -- -j3
+cd /microservices/
+mkdir build && cd build
+cmake ..              # Generates all the make files
+make                  # Compiles the project based on all the make files
+make install          # Installs the .so files into the microservices plugin directory
 ```
 
 ## Packaging TODO: Needs to be updated for CMake procedure
@@ -23,7 +25,8 @@ Don't forget to:
 Then execute
 
 ```
-./packaging/build.sh
+cd /microservices/
+make package
 ```
 
 ## Releasing
