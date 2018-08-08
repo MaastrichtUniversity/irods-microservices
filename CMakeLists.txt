@@ -15,6 +15,7 @@ cmake_minimum_required(VERSION 3.5.0 FATAL_ERROR)
 # TODO: Determine what is the preferred way of doing this: setting the values here vs. using ENV vars vs. providing them with the -D flag in cmake call
 # Note: Some of the include dirs (like CURL) can automatically be found by CMake at the 'include_directories' step and do not have to be set here.
 #       See https://cmake.org/cmake/help/v3.0/module/FindCURL.html
+set(MSI_RELEASE_VERSION "1.1.0")
 set(IRODS_VERSION "4.2.3")
 set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang3.8-0)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
@@ -53,14 +54,16 @@ project(irods-microservices C CXX)
 
 # Check installed iRODS version
 find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
-message(STATUS "Building for irods-server version ${IRODS_VERSION}")
+message(STATUS "Building microservices version ${MSI_RELEASE_VERSION} for irods-server version ${IRODS_VERSION}")
 
 # Set the output folder where your program will be created
 # CMAKE_SOURCE_DIR is the directory where the CMakeLists.txt file is located
-# We will create a bin/ directory within the build/ directory
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/bin)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+# CMAKE_BINARY_DIR is the root of the build tree
+# We will create a bin/ subdirectory within build/ and direct all the binaries (libraries and executables) over there
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 
 # Include the header files into the project
@@ -110,4 +113,56 @@ install(TARGETS
         msiput_dataobj_or_coll
         DESTINATION
         /usr/lib/irods/plugins/microservices)
+
+
+# Packaging {{{
+
+# Make sure your umask is set correctly when packaging:
+# The default umask on CentOS 7 is 0002, which results in e.g. rwxrwxr-x
+# directories within generated RPMs, which will conflict with existing
+# directories from irods packages, which will be rwxr-xr-x.
+# To create packages on CentOS 7, set your umask to 0022 first (`umask 0022`).
+
+set(CPACK_MONOLITHIC_INSTALL 1)
+set(CPACK_CMAKE_GENERATOR "Unix Makefiles")
+
+# Run custom CMake module to detect OS family
+include(${CMAKE_MODULE_PATH}/DetectOS.cmake)
+message(STATUS "Found Linux distro ${DETECTED_OS}")
+
+# Determine which type of package should be generated
+if(DETECTED_OS MATCHES "^(Ubuntu|Debian)$")
+    set(CPACK_GENERATOR "DEB")
+elseif(DETECTED_OS MATCHES "^(CentOS|RedHatCompatible)$")
+    set(CPACK_GENERATOR "RPM")
+endif()
+message(STATUS "Using CPACK generator ${CPACK_GENERATOR}")
+
+set(CPACK_PACKAGE_NAME "rit-irods-microservices")
+set(CPACK_PACKAGE_VENDOR "DataHub Maastricht University <datahub@maastrichtuniversity.nl>")
+set(CPACK_PACKAGE_CONTACT "DataHub Maastricht University <datahub@maastrichtuniversity.nl>")
+set(CPACK_PACKAGE_VERSION "${IRODS_VERSION}_${MSI_RELEASE_VERSION}")
+
+#set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/package/description.txt")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "iRODS microservices for the RIT project")
+
+set(CPACK_RESOURCE_FILE_README  "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+
+set(CPACK_RPM_PACKAGE_RELEASE "1")
+set(CPACK_RPM_PACKAGE_LICENSE "LGPLv3")
+set(CPACK_RPM_PACKAGE_REQUIRES "irods-server = ${IRODS_VERSION}, boost-locale >= 1.51, libcurl >= 7.29.0, libxml2 >= 2.9.1, libxslt >= 1.1.28, jansson >= 2.10")
+set(CPACK_RPM_PACKAGE_CONFLICTS "irods-uu-microservices")
+set(CPACK_RPM_PACKAGE_URL "https://github.com/MaastrichtUniversity/rit-irods-microservices")
+set(CPACK_RPM_PACKAGE_AUTOREQ 0)
+set(CPACK_RPM_PACKAGE_AUTOPROV 0)
+
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "irods-server = ${IRODS_VERSION}, irods-runtime = ${IRODS_VERSION}")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/MaastrichtUniversity/rit-irods-microservices")
+set(CPACK_DEBIAN_PACKAGE_SECTION "contrib/science")
+
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}")
+
+include(CPack)
+
+# }}}
 
