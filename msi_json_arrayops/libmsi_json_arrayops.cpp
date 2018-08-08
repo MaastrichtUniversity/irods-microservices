@@ -98,6 +98,7 @@ extern "C" {
         } else if ( strOps == "get" ) {
             json_t *elem = json_array_get(root, inIdx);
 
+            // Updated our rule with added functionality from Utrecht University
             /* output a string directly, but encode other json types using json_dumps with JSON_ENCODE_ANY set */
             if ( json_is_string(elem)) {
                 fillStrInMsParam(val, json_string_value(elem));
