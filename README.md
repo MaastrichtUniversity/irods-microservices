@@ -4,7 +4,40 @@ iRODS microservices for the RIT project
 
 ## Dependencies
 
-irods-dev, libssl-dev libcurl4-openssl-dev
+##### Ubuntu & Debian
+```
+# Install via packet manager
+apt-get install \
+libssl-dev \
+libcurl4-openssl-dev \
+g++ \
+make \
+irods-dev \
+irods-externals-clang-runtime3.8-0 \
+irods-externals-clang3.8-0
+
+# Then install a recent version of CMake
+wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.sh && \
+sudo sh cmake-3.12.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
+```
+
+##### CentOS & RedHat
+```
+# Install via packet manager
+yum install \
+openssl-devel \
+libcurl-devel \
+gcc-c++ \
+make \
+rpm-build \
+irods-devel \
+irods-externals-clang-runtime3.8-0 \
+irods-externals-clang3.8-0
+    
+# Then install a recent version of CMake
+wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.sh && \
+sudo sh cmake-3.12.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
+```
 
 ## Building
 
@@ -16,18 +49,15 @@ make                  # Compiles the project based on all the make files
 make install          # Installs the .so files into the microservices plugin directory
 ```
 
-## Packaging TODO: Needs to be updated for CMake procedure
-
-Don't forget to:
-* add a new microservice to `packaging/rit-irods-microservices.list.template`
-* update the PLUGINVERSION in `VERSION` file
-
-Then execute
+## Packaging
 
 ```
-cd /microservices/
+cd /microservices/build
 make package
 ```
+
+Find your .rpm or .deb package in the `/microservices/build` directory. <br><br>
+The name of the package is constructed like this: `rit-irods-microservices-IRODS VERSION_MSI RELEASE VERSION-1.rpm|deb`
 
 ## Releasing
 
