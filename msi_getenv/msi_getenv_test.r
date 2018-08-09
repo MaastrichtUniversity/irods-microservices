@@ -12,7 +12,7 @@ irule_dummy() {
 
 IRULE_msi_getenv_test(*var, *result) {
 
-    msi_getenv("MIRTH_METADATA_CHANNEL", *result);
+    msi_getenv(*var, *result);
 
 }
 
