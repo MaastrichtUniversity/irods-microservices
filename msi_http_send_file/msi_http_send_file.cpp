@@ -68,7 +68,7 @@ class irodsCurl {
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-iRODS");
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
         // Possibly this timeout is too conservative
-        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 120L);
 
         // CURL call
         res = curl_easy_perform(curl);
