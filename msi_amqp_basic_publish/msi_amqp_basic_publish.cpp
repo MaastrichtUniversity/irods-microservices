@@ -125,15 +125,27 @@ extern "C" {
 
         status = amqp_basic_publish(conn, 1, exchange_bytes, routing_key_bytes, 0, 0, &props, message_bytes);
 
-        if ( status < 0 ) {
+        if ( status > 0 ) {
             rodsLog( LOG_ERROR, "amqp_basic_publish: amqp_basic_publish returned %d (%s)", status, amqp_error_string2(status));
             return SYS_INTERNAL_NULL_INPUT_ERR;
         }
 
         rodsLog( LOG_NOTICE, "amqp_basic_publish: Published message to rabbitmq (on %s) at exchange %s using routing_key %s.", hostname, exchange, routingKey);
 
-        amqp_channel_close(conn, 1, AMQP_REPLY_SUCCESS);
-        amqp_connection_close(conn, AMQP_REPLY_SUCCESS);
+        reply = amqp_channel_close(conn, 1, AMQP_REPLY_SUCCESS);
+
+        if ( reply.reply_type != AMQP_RESPONSE_NORMAL) {
+            rodsLog( LOG_ERROR, "amqp_basic_publish: amqp_channel_close response was not normal");
+            return SYS_INTERNAL_NULL_INPUT_ERR;
+        }
+
+        reply = amqp_connection_close(conn, AMQP_REPLY_SUCCESS);
+
+        if ( reply.reply_type != AMQP_RESPONSE_NORMAL) {
+            rodsLog( LOG_ERROR, "amqp_basic_publish: amqp_connection_close response was not normal");
+            return SYS_INTERNAL_NULL_INPUT_ERR;
+        }
+
         amqp_destroy_connection(conn);
 
         // Done
