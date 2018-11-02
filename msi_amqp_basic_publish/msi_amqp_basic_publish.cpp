@@ -33,6 +33,7 @@ extern "C" {
         amqp_connection_state_t conn;
         amqp_rpc_reply_t reply;
         amqp_bytes_t message_bytes, exchange_bytes, routing_key_bytes;
+        amqp_basic_properties_t props;
         int status, i;
 
         // Sanity checks
@@ -118,7 +119,11 @@ extern "C" {
             return SYS_INTERNAL_NULL_INPUT_ERR;
         }
 
-        status = amqp_basic_publish(conn, 1, exchange_bytes, routing_key_bytes, 0, 0, NULL, message_bytes);
+        // persistent delivery mode
+        props._flags = AMQP_BASIC_DELIVERY_MODE_FLAG;
+        props.delivery_mode = 2;
+
+        status = amqp_basic_publish(conn, 1, exchange_bytes, routing_key_bytes, 0, 0, &props, message_bytes);
 
         if ( status < 0 ) {
             rodsLog( LOG_ERROR, "amqp_basic_publish: amqp_basic_publish returned %d (%s)", status, amqp_error_string2(status));
