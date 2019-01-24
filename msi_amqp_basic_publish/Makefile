@@ -1,3 +1,5 @@
+# TODO: Make this msi compatible with CMake building in 4.2.x
+
 GCC=g++
 INC=-I/usr/include/irods/ -I/usr/include/irods/boost/
 
