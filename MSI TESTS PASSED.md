@@ -7,4 +7,5 @@
 | msi_time_ts2str       | 4.2.3         | 2018-08-07     | PASS      |
 | msi_unmount           | 4.2.3         | 2018-08-07     | PASS      |
 | msiput_dataobj_or_coll| 4.2.3         | 2018-08-07     | PASS      |
+| msi_amqp_basic_publish| 4.2.4         | 2019-01-31     | FAIL, didn't succeed to include rabbitmq headers      |
 

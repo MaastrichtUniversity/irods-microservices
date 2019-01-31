@@ -1,7 +1,10 @@
+//TODO: Port this microservice to iRODS 4.2.x
+
 // =-=-=-=-=-=-=-
-#include "apiHeaderAll.hpp"
-#include "msParam.hpp"
-#include "reGlobalsExtern.hpp"
+//#include "apiHeaderAll.hpp"
+//#include "msParam.hpp"
+//#include "reGlobalsExtern.hpp"
+#include "irods_error.hpp"
 #include "irods_ms_plugin.hpp"
 
 // =-=-=-=-=-=-=-
@@ -17,8 +20,8 @@
 
 extern "C" {
 
-// =-=-=-=-=-=-=-
-// 1. Write a standard issue microservice
+    // =-=-=-=-=-=-=-
+    // 1. Write a standard issue microservice
     int irods_amqp_basic_publish(
             msParam_t* hostnameParam,
             msParam_t* portParam,
@@ -154,9 +157,9 @@ extern "C" {
     }
 
 
-// =-=-=-=-=-=-=-
-// 2.  Create the plugin factory function which will return a microservice
-//     table entry
+    // =-=-=-=-=-=-=-
+    // 2.  Create the plugin factory function which will return a microservice
+    //     table entry
     irods::ms_table_entry*  plugin_factory() {
         // =-=-=-=-=-=-=-
         // 3.  allocate a microservice plugin which takes the number of function
@@ -168,11 +171,20 @@ extern "C" {
         // 4. add the microservice function as an operation to the plugin
         //    the first param is the name / key of the operation, the second
         //    is the name of the function which will be the microservice
-        msvc->add_operation( "irods_amqp_basic_publish", "amqp_basic_publish" );
-
+        msvc->add_operation(
+                "irods_amqp_basic_publish",
+                std::function<int(
+                        msParam_t*,
+                        msParam_t*,
+                        msParam_t*,
+                        msParam_t*,
+                        msParam_t*,
+                        msParam_t*,
+                        msParam_t*,
+                        ruleExecInfo_t*)>(irods_amqp_basic_publish));
         // =-=-=-=-=-=-=-
         // 5. return the newly created microservice plugin
         return msvc;
     }
 
-}	// extern "C"
+}   // extern "C"
