@@ -17,8 +17,8 @@ cmake_minimum_required(VERSION 3.5.0 FATAL_ERROR)
 #       See https://cmake.org/cmake/help/v3.0/module/FindCURL.html
 set(MSI_RELEASE_VERSION "1.1.0")
 
-set(IRODS_VERSION ${ENV_IRODS_VERSION}) # Get iRODS version from environment
-#set(IRODS_VERSION "4.2.4")             # Or specificy iRODS version manually
+set(IRODS_VERSION $ENV{IRODS_VERSION}) # Get iRODS version from environment
+#set(IRODS_VERSION "4.2.4")            # Or specificy iRODS version manually
 
 set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang3.8-0)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
