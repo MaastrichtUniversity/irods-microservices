@@ -61,16 +61,6 @@ project(irods-microservices C CXX)
 find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
 message(STATUS "Building microservices version ${MSI_RELEASE_VERSION} for irods-server version ${IRODS_VERSION}")
 
-# Set the output folder where your program will be created
-# CMAKE_SOURCE_DIR is the directory where the CMakeLists.txt file is located
-# CMAKE_BINARY_DIR is the root of the build tree
-# We will create a bin/ subdirectory within build/ and direct all the binaries (libraries and executables) over there
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-
 # Include the header files into the project
 include_directories("${IRODS_EXTERNALS_FULLPATH_CLANG}/include/c++/v1")
 
