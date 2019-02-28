@@ -7,12 +7,12 @@
 #
 # irods-externals-clang-runtime3.8-0
 # irods-externals-clang3.8-0
+# irods-externals
 
 # Specify the minimum version for CMake
 cmake_minimum_required(VERSION 3.5.0 FATAL_ERROR)
 
 # Set global CMAKE variables
-# TODO: Determine what is the preferred way of doing this: setting the values here vs. using ENV vars vs. providing them with the -D flag in cmake call
 # Note: Some of the include dirs (like CURL) can automatically be found by CMake at the 'include_directories' step and do not have to be set here.
 #       See https://cmake.org/cmake/help/v3.0/module/FindCURL.html
 set(MSI_RELEASE_VERSION "1.1.0")
@@ -20,11 +20,14 @@ set(MSI_RELEASE_VERSION "1.1.0")
 set(IRODS_VERSION $ENV{IRODS_VERSION}) # Get iRODS version from environment
 #set(IRODS_VERSION "4.2.4")            # Or specificy iRODS version manually
 
-set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang3.8-0)
+
+# Set additional modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
+
+# Set some paths for dependencies from irods-externals
 set(BOOST_ROOT "/opt/irods-externals/boost1.60.0-0")
-set(JANSSON_INCLUDE_DIRS /opt/irods-externals/jansson2.7-0/include/)
-set(JANSSON_LIBRARIES /opt/irods-externals/jansson2.7-0/lib/)
+set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang3.8-0)
+set(JANSSON_ROOT /opt/irods-externals/jansson2.7-0)
 
 # Set compiler options
 # TODO: Understand what this does and why this is needed. I just copied this from UU to make it work
@@ -44,7 +47,6 @@ add_compile_options(-std=c++14
                     -Wno-unused-parameter)
 
 # Use shared libraries in this project
-# TODO: Understand what this does and why this is needed. I just copied this from UU to make it work
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++")
 link_libraries(c++abi)
 

@@ -20,6 +20,7 @@ else (JANSSON_LIBRARIES AND JANSSON_INCLUDE_DIRS)
     NAMES
       jansson.h
     PATHS
+      ${JANSSON_ROOT}/include
       /usr/include
       /usr/local/include
       /opt/local/include
@@ -30,6 +31,7 @@ find_library(JANSSON_LIBRARY
     NAMES
       jansson
     PATHS
+      ${JANSSON_ROOT}/lib
       /usr/lib
       /usr/local/lib
       /opt/local/lib
