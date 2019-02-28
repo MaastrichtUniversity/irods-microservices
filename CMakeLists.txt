@@ -30,7 +30,6 @@ set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang3.8-0)
 set(JANSSON_ROOT /opt/irods-externals/jansson2.7-0)
 
 # Set compiler options
-# TODO: Understand what this does and why this is needed. I just copied this from UU to make it work
 add_compile_options(-std=c++14
                     -Os
                     -fPIC
@@ -84,6 +83,9 @@ include_directories(SYSTEM ${CURL_INCLUDE_DIRS})
 find_package(Jansson REQUIRED)
 include_directories(SYSTEM ${JANSSON_INCLUDE_DIRS})
 
+find_package(Rabbitmq REQUIRED)
+include_directories(SYSTEM ${RABBITMQ_INCLUDE_DIRS} )
+
 include_directories("/usr/include/irods")
 
 
@@ -96,6 +98,7 @@ add_library(msi_json_objops           SHARED msi_json_objops/libmsi_json_objops.
 add_library(msi_time_ts2str           SHARED msi_time_ts2str/libmsi_time_ts2str.cpp)
 add_library(msi_unmount               SHARED msi_unmount/unmount.cpp)
 add_library(msiput_dataobj_or_coll    SHARED msiput_dataobj_or_coll/libmsiput_dataobj_or_coll.cpp)
+add_library(msi_amqp_basic_publish    SHARED msi_amqp_basic_publish/msi_amqp_basic_publish.cpp)
 
 # Link the generated library to dependency libraries
 target_link_libraries(msi_getenv              LINK_PUBLIC ${Boost_LIBRARIES})
@@ -105,6 +108,7 @@ target_link_libraries(msi_json_objops         LINK_PUBLIC ${JANSSON_LIBRARIES} $
 target_link_libraries(msi_time_ts2str         LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msi_unmount             LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msiput_dataobj_or_coll  LINK_PUBLIC ${Boost_LIBRARIES})
+target_link_libraries(msi_amqp_basic_publish  LINK_PUBLIC ${Boost_LIBRARIES} ${RABBITMQ_LIBRARIES})
 
 
 #Set the location for library installation

@@ -37,7 +37,7 @@ extern "C" {
         amqp_rpc_reply_t reply;
         amqp_bytes_t message_bytes, exchange_bytes, routing_key_bytes;
         amqp_basic_properties_t props;
-        int status, i;
+        int status;
 
         // Sanity checks
         if ( !rei || !rei->rsComm ) {
