@@ -44,7 +44,8 @@ add_compile_options(-std=c++14
                     -Wuninitialized
                     -Wconversion
                     -Wno-missing-field-initializers
-                    -Wno-unused-parameter)
+                    -Wno-unused-parameter
+                    -Wno-gnu-zero-variadic-macro-arguments)
 
 # Use shared libraries in this project
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++")

@@ -104,8 +104,7 @@ class irodsCurl {
         dataObjInp_t file;
         openedDataObjInp_t openedFile;
         bytesBuf_t bytesBuf;
-
-        size_t bytesRead;
+        int bytesRead;
 
         // Make sure we have something to read from
         if (!readData) {
@@ -140,16 +139,15 @@ class irodsCurl {
         openedFile.l1descInx = readData->desc;
         openedFile.len = bytesBuf.len;
 
-        // bytesRead = 0;
-        //TODO: At Paul: during compilation warning: implicit conversion changes signedness: 'int' to 'size_t' (aka 'unsigned long')
+        // Read iRODS object
         bytesRead = rsDataObjRead(readData->rsComm, &openedFile, &bytesBuf);
-        //TODO: At Paul: during compilation warning: comparison of unsigned expression < 0 is always false
+
         if (bytesRead < 0) {
             rodsLog(LOG_ERROR, "irods_http_send_file: Problem reading iRODS object. Status =  %d", bytesRead);
             return CURL_READFUNC_ABORT;
         }
 
-        return (bytesRead);
+        return (size_t) bytesRead;
     }
 
 }; 	// class irodsCurl
@@ -161,8 +159,6 @@ extern "C" {
 // 1. Write a standard issue microservice
     int irods_http_send_file( msParam_t* url, msParam_t* src_obj, ruleExecInfo_t* rei ) {
         dataObjInp_t dataObjInp, *myDataObjInp;
-        //TODO: At Paul: during compilation "warning: unused variable 'myUrl'"
-        char *myUrl;
 
         // Sanity checks
         if ( !rei || !rei->rsComm ) {

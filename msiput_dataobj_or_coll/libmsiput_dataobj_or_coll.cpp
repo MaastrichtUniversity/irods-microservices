@@ -1,12 +1,5 @@
-// 2018-08-07 Ported this microservice to iRODS 4.2.3
-// Based my changes here on a diff between these two versions on irods/contrib:
-// 4.1 https://github.com/irods/contrib/blob/4-1-stable/microservices/landing_zone_microservices/msiput_dataobj_or_coll/libmsiput_dataobj_or_coll.cpp
-// 4.2 https://github.com/irods/contrib/blob/e31f055dee5e3e8ca76b2ccd6011f684dc2f130c/microservices/landing_zone_microservices/msiput_dataobj_or_coll/libmsiput_dataobj_or_coll.cpp
-
-//#include "reFuncDefs.h"
 #include "irods_ms_plugin.hpp"
 #include "objInfo.h"
-#include "reDataObjOpr.hpp"
 #include "collCreate.h"
 #include "dataObjPut.h"
 #include "collection.hpp"
@@ -25,7 +18,6 @@ void strip_trailing_slash(
     std::string& _path ) {
     if( *_path.rbegin() == '/' )
         _path = _path.substr( 0, _path.size()-1 );
-
 }
 
 
@@ -215,7 +207,7 @@ irods::error put_all_the_files(
 
 // =-=-=-=-=-=-=-
 // 1. Write a standard issue microservice
-int msiput_dataobj_or_coll(
+long long msiput_dataobj_or_coll(
     msParam_t* _path,
     msParam_t* _resc,
     msParam_t* _opts,
@@ -310,7 +302,7 @@ int msiput_dataobj_or_coll(
     if (!ret.ok()) {
         addRErrorMsg(
                 &rei->rsComm->rError,
-                ret.code(),
+                (int) ret.code(),
                 ret.result().c_str());
     }
 

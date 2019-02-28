@@ -104,7 +104,7 @@ extern "C" {
                 if ( data ) {
                     if ( json_is_array( data ) ) {
                         size_t i_match = json_array_size(data);
-                        for( int i=0; i<json_array_size(data); i++ ) {
+                        for( size_t i=0; i<json_array_size(data); i++ ) {
                             json_t *ov = json_array_get(data, i);
                             if ( json_equal(ov, jval) ) { i_match = i; break; }
                         }

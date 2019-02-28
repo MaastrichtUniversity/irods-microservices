@@ -22,7 +22,7 @@ extern "C" {
         const char *inJsonStr = parseMspForStr( json_str );
         const char *inVal = parseMspForStr( val );
         const char *inOps = parseMspForStr( ops );
-        const int inIdx = parseMspForPosInt( sizeOrIndex );
+        int inIdx = parseMspForPosInt( sizeOrIndex );
 
         if( ! inJsonStr ) {
             cout << "msi_json_arrayops - invalid inJsonStr" << endl;
@@ -69,9 +69,9 @@ extern "C" {
         }
 
         // find if jval is already presented in array
-        size_t i_match = outSizeOrIndex;
+        int i_match = outSizeOrIndex;
         for( int i=0; i < outSizeOrIndex; i++ ) {
-            json_t *ov = json_array_get(root, i);
+            json_t *ov = json_array_get(root, (size_t) i);
             if ( json_equal(ov, jval) ) { i_match = i; break; }
         }
 
@@ -85,7 +85,7 @@ extern "C" {
 
             if ( i_match < outSizeOrIndex ) {
                 if ( strOps == "rm" ) {
-                    json_array_remove(root, i_match);
+                    json_array_remove(root, (size_t) i_match);
                     outSizeOrIndex = (int) json_array_size(root);
                 } else {
                     outSizeOrIndex = i_match;
@@ -96,7 +96,7 @@ extern "C" {
         } else if ( strOps == "size" ) {
             outSizeOrIndex = (int) json_array_size(root);
         } else if ( strOps == "get" ) {
-            json_t *elem = json_array_get(root, inIdx);
+            json_t *elem = json_array_get(root, (size_t) inIdx);
 
             // Updated our rule with added functionality from Utrecht University
             /* output a string directly, but encode other json types using json_dumps with JSON_ENCODE_ANY set */
