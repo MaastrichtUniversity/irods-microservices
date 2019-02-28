@@ -1,38 +1,37 @@
 # irods-microservices
 
-iRODS microservices for the RIT project
+iRODS microservices for DataHub
 
 ## Dependencies
 
-##### Ubuntu & Debian
+Dependencies have been installed in icat and ires docker containers.
+
+##### Ubuntu 16.04
 ```
 # Install via packet manager
 apt-get install \
-libssl-dev \
-libcurl4-openssl-dev \
-g++ \
-make \
-irods-dev \
-irods-externals-clang-runtime3.8-0 \
-irods-externals-clang3.8-0
-
-# Then install a recent version of CMake
-wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.sh && \
-sudo sh cmake-3.12.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
+    libssl-dev \
+    libcurl4-openssl-dev \
+    g++ \
+    make \
+    irods-dev \
+    irods-externals-clang-runtime3.8-0 \
+    irods-externals-clang3.8-0 \
+    cmake
 ```
 
-##### CentOS & RedHat
+##### CentOS 7
 ```
 # Install via packet manager
 yum install \
-openssl-devel \
-libcurl-devel \
-gcc-c++ \
-make \
-rpm-build \
-irods-devel \
-irods-externals-clang-runtime3.8-0 \
-irods-externals-clang3.8-0
+    openssl-devel \
+    libcurl-devel \
+    gcc-c++ \
+    make \
+    rpm-build \
+    irods-devel \
+    irods-externals-clang-runtime3.8-0 \
+    irods-externals-clang3.8-0
     
 # Then install a recent version of CMake
 wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.sh && \
