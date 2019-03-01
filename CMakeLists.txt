@@ -10,7 +10,7 @@
 # irods-externals
 
 # Specify the minimum version for CMake
-cmake_minimum_required(VERSION 3.5.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.3.0 FATAL_ERROR)
 
 # Set global CMAKE variables
 # Note: Some of the include dirs (like CURL) can automatically be found by CMake at the 'include_directories' step and do not have to be set here.
