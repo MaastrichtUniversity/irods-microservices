@@ -101,7 +101,7 @@ target_link_libraries(msiput_dataobj_or_coll  LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msi_amqp_basic_publish  LINK_PUBLIC ${Boost_LIBRARIES} ${RABBITMQ_LIBRARIES})
 
 
-#Set the location for library installation
+# Set the location for library installation
 install(CODE "MESSAGE(\"Installing microservices to iRODS plugins folder...\")")
 install(TARGETS
         msi_getenv
@@ -111,6 +111,7 @@ install(TARGETS
         msi_time_ts2str
         msi_unmount
         msiput_dataobj_or_coll
+        msi_amqp_basic_publish
         DESTINATION
         /usr/lib/irods/plugins/microservices)
 
@@ -143,7 +144,7 @@ set(CPACK_PACKAGE_VENDOR "DataHub Maastricht University <datahub@maastrichtunive
 set(CPACK_PACKAGE_CONTACT "DataHub Maastricht University <datahub@maastrichtuniversity.nl>")
 set(CPACK_PACKAGE_VERSION "${IRODS_VERSION}_${MSI_RELEASE_VERSION}")
 
-#set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/package/description.txt")
+#set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/packaging/description.txt")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "iRODS microservices for the RIT project")
 
 set(CPACK_RESOURCE_FILE_README  "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
@@ -163,6 +164,14 @@ set(CPACK_DEBIAN_PACKAGE_SECTION "contrib/science")
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}")
 
 include(CPack)
+
+add_custom_target(rit-package
+  COMMAND ${CMAKE_CPACK_COMMAND}
+  COMMAND mkdir -p /microservices/packages/
+
+  # TODO: This is not very pretty. I couldn't find a way to get the resulting deb or rpm name in reliable way
+  COMMAND mv ${CMAKE_CURRENT_BINARY_DIR}/rit-irods-microservices* /microservices/packages/.
+)
 
 # }}}
 

@@ -41,9 +41,8 @@ sudo sh cmake-3.12.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
 ## Building
 
 ```
-cd /microservices/
 mkdir build && cd build
-cmake ..              # Generates all the make files
+cmake /microservices  # Generates all the make files
 make                  # Compiles the project based on all the make files
 make install          # Installs the .so files into the microservices plugin directory
 ```
@@ -53,6 +52,8 @@ make install          # Installs the .so files into the microservices plugin dir
 ```
 cd /microservices/build
 make package
+# Move resulting package back to /microservices
+make rit-package
 ```
 
 Find your .rpm or .deb package in the `/microservices/build` directory. <br><br>
