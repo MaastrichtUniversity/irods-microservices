@@ -1,9 +1,4 @@
-//TODO: Port this microservice to iRODS 4.2.x
-
 // =-=-=-=-=-=-=-
-//#include "apiHeaderAll.hpp"
-//#include "msParam.hpp"
-//#include "reGlobalsExtern.hpp"
 #include "irods_error.hpp"
 #include "irods_ms_plugin.hpp"
 
