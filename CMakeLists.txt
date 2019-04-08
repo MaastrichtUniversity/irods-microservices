@@ -89,6 +89,7 @@ add_library(msi_time_ts2str           SHARED msi_time_ts2str/libmsi_time_ts2str.
 add_library(msi_unmount               SHARED msi_unmount/unmount.cpp)
 add_library(msiput_dataobj_or_coll    SHARED msiput_dataobj_or_coll/libmsiput_dataobj_or_coll.cpp)
 add_library(msi_amqp_basic_publish    SHARED msi_amqp_basic_publish/msi_amqp_basic_publish.cpp)
+add_library(msi_set_avu               SHARED msi_set_avu/msi_set_avu.cpp)
 
 # Link the generated library to dependency libraries
 target_link_libraries(msi_getenv              LINK_PUBLIC ${Boost_LIBRARIES})
@@ -99,6 +100,7 @@ target_link_libraries(msi_time_ts2str         LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msi_unmount             LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msiput_dataobj_or_coll  LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msi_amqp_basic_publish  LINK_PUBLIC ${Boost_LIBRARIES} ${RABBITMQ_LIBRARIES})
+target_link_libraries(msi_set_avu             LINK_PUBLIC ${Boost_LIBRARIES})
 
 
 # Set the location for library installation
@@ -112,6 +114,7 @@ install(TARGETS
         msi_unmount
         msiput_dataobj_or_coll
         msi_amqp_basic_publish
+        msi_set_avu
         DESTINATION
         /usr/lib/irods/plugins/microservices)
 
