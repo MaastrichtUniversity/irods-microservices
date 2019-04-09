@@ -2,7 +2,7 @@
 #include "irods_ms_plugin.hpp"
 #include "rsModAVUMetadata.hpp"
 
-int msiSetAVU(
+int msiAddAVU(
     msParam_t* _item_type,
     msParam_t* _item_name,
     msParam_t* _attr_name,
@@ -35,7 +35,7 @@ int msiSetAVU(
         return SYS_INVALID_INPUT_PARAM;
     }
 
-    char op[]  = "set";
+    char op[]  = "rmw";
 
     modAVUMetadataInp_t avuOp;
     memset(&avuOp, 0, sizeof(avuOp));
@@ -62,13 +62,13 @@ irods::ms_table_entry* plugin_factory() {
         msParam_t*,
         msParam_t*,
         msParam_t*,
-        ruleExecInfo_t*>("msiSetAVU",
+        ruleExecInfo_t*>("msiAddAVU",
                          std::function<int(
                              msParam_t*,
                              msParam_t*,
                              msParam_t*,
                              msParam_t*,
                              msParam_t*,
-                             ruleExecInfo_t*)>(msiSetAVU));
+                             ruleExecInfo_t*)>(msiAddAVU));
     return msvc;
 }
