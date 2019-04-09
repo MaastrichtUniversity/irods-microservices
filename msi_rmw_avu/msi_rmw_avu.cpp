@@ -2,7 +2,7 @@
 #include "irods_ms_plugin.hpp"
 #include "rsModAVUMetadata.hpp"
 
-int msiAddAVU(
+int msiRmwAVU(
     msParam_t* _item_type,
     msParam_t* _item_name,
     msParam_t* _attr_name,
@@ -62,13 +62,13 @@ irods::ms_table_entry* plugin_factory() {
         msParam_t*,
         msParam_t*,
         msParam_t*,
-        ruleExecInfo_t*>("msiAddAVU",
+        ruleExecInfo_t*>("msiRmwAVU",
                          std::function<int(
                              msParam_t*,
                              msParam_t*,
                              msParam_t*,
                              msParam_t*,
                              msParam_t*,
-                             ruleExecInfo_t*)>(msiAddAVU));
+                             ruleExecInfo_t*)>(msiRmwAVU));
     return msvc;
 }
