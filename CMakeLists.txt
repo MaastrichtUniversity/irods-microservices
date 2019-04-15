@@ -15,7 +15,7 @@ cmake_minimum_required(VERSION 3.3.0 FATAL_ERROR)
 # Set global CMAKE variables
 # Note: Some of the include dirs (like CURL) can automatically be found by CMake at the 'include_directories' step and do not have to be set here.
 #       See https://cmake.org/cmake/help/v3.0/module/FindCURL.html
-set(MSI_RELEASE_VERSION "1.1.0")
+set(MSI_RELEASE_VERSION "2.0.0")
 
 set(IRODS_VERSION $ENV{IRODS_VERSION}) # Get iRODS version from environment
 #set(IRODS_VERSION "4.2.4")            # Or specificy iRODS version manually

@@ -39,24 +39,27 @@ sudo sh cmake-3.12.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
 ```
 
 ## Building
-
+_These instructions assume that this microservice git-repository has been cloned into `/microservices`_
 ```
-mkdir build && cd build
+mkdir /build && cd /build
 cmake /microservices  # Generates all the make files
+                      # NOTE: in CentOS, use `cmake3 /microservices`
 make                  # Compiles the project based on all the make files
 make install          # Installs the .so files into the microservices plugin directory
 ```
 
 ## Packaging
-
+1. Open the _CMakeLists.txt_ file and update the value of `set(MSI_RELEASE_VERSION "2.0.0")` to the version tag you are releasing.
+1. Execute the build steps above (excluding `make install`)
+1. Execute the commands below to create the package
 ```
-cd /microservices/build
+cd /build
 make package
-# Move resulting package back to /microservices
+# Move resulting package back to /microservices/packages/
 make rit-package
 ```
 
-Find your .rpm or .deb package in the `/microservices/build` directory. <br><br>
+Find your .rpm or .deb package in the `/microservices/packages` directory. <br><br>
 The name of the package is constructed like this: `rit-irods-microservices-IRODS VERSION_MSI RELEASE VERSION-1.rpm|deb`
 
 ## Releasing
