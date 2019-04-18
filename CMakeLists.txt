@@ -143,15 +143,16 @@ message(STATUS "Found Linux distro ${DETECTED_OS}")
 # Determine which type of package should be generated
 if(DETECTED_OS MATCHES "^(Ubuntu|Debian)$")
     set(CPACK_GENERATOR "DEB")
+    set(CPACK_PACKAGE_VERSION "${IRODS_VERSION}-${MSI_RELEASE_VERSION}")
 elseif(DETECTED_OS MATCHES "^(CentOS|RedHatCompatible)$")
     set(CPACK_GENERATOR "RPM")
+    set(CPACK_PACKAGE_VERSION "${IRODS_VERSION}_${MSI_RELEASE_VERSION}")
 endif()
 message(STATUS "Using CPACK generator ${CPACK_GENERATOR}")
 
 set(CPACK_PACKAGE_NAME "rit-irods-microservices")
 set(CPACK_PACKAGE_VENDOR "DataHub Maastricht University <datahub@maastrichtuniversity.nl>")
 set(CPACK_PACKAGE_CONTACT "DataHub Maastricht University <datahub@maastrichtuniversity.nl>")
-set(CPACK_PACKAGE_VERSION "${IRODS_VERSION}_${MSI_RELEASE_VERSION}")
 
 #set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/packaging/description.txt")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "iRODS microservices for the RIT project")
@@ -166,7 +167,7 @@ set(CPACK_RPM_PACKAGE_URL "https://github.com/MaastrichtUniversity/rit-irods-mic
 set(CPACK_RPM_PACKAGE_AUTOREQ 0)
 set(CPACK_RPM_PACKAGE_AUTOPROV 0)
 
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "irods-server = ${IRODS_VERSION}, irods-runtime = ${IRODS_VERSION}")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "irods-server (= ${IRODS_VERSION}), irods-runtime (= ${IRODS_VERSION})")
 set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/MaastrichtUniversity/rit-irods-microservices")
 set(CPACK_DEBIAN_PACKAGE_SECTION "contrib/science")
 
