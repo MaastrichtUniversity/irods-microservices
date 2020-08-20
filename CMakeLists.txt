@@ -20,13 +20,16 @@ set(MSI_RELEASE_VERSION "2.0.0")
 set(IRODS_VERSION $ENV{IRODS_VERSION}) # Get iRODS version from environment
 #set(IRODS_VERSION "4.2.4")            # Or specificy iRODS version manually
 
+# Check installed iRODS version
+find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
+message(STATUS "Building microservices version ${MSI_RELEASE_VERSION} for irods-server version ${IRODS_VERSION}")
 
 # Set additional modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
 
 # Set some paths for dependencies from irods-externals
 set(BOOST_ROOT "/opt/irods-externals/boost1.67.0-0")
-set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang3.8-0)
+set(IRODS_EXTERNALS_FULLPATH_CLANG "/opt/irods-externals/clang3.8-0")
 
 # Set compiler options
 add_compile_options(-std=c++14
@@ -56,12 +59,9 @@ set(CMAKE_CXX_COMPILER ${IRODS_EXTERNALS_FULLPATH_CLANG}/bin/clang++)
 # Set the project's name and which compiler(s) to use
 project(irods-microservices C CXX)
 
-# Check installed iRODS version
-find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
-message(STATUS "Building microservices version ${MSI_RELEASE_VERSION} for irods-server version ${IRODS_VERSION}")
-
 # Include the header files into the project
 include_directories("${IRODS_EXTERNALS_FULLPATH_CLANG}/include/c++/v1")
+include_directories("/usr/include/irods")
 
 find_package(Boost REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
@@ -74,9 +74,6 @@ include_directories(SYSTEM ${JANSSON_INCLUDE_DIRS})
 
 find_package(Rabbitmq REQUIRED)
 include_directories(SYSTEM ${RABBITMQ_INCLUDE_DIRS} )
-
-include_directories("/usr/include/irods")
-
 
 # Generate the shared Library (= binary) from the source code
 # Note: unlike an Executable, a library does not contain a main method. It just contains the classes
