@@ -17,6 +17,7 @@ apt-get install \
     irods-dev \
     irods-externals-clang-runtime3.8-0 \
     irods-externals-clang3.8-0 \
+    libjansson-dev \
     cmake
 ```
 
@@ -26,6 +27,7 @@ apt-get install \
 yum install \
     openssl-devel \
     libcurl-devel \
+    jansson-devel \
     gcc-c++ \
     make \
     rpm-build \
