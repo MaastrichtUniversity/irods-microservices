@@ -25,7 +25,7 @@ set(IRODS_VERSION $ENV{IRODS_VERSION}) # Get iRODS version from environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
 
 # Set some paths for dependencies from irods-externals
-set(BOOST_ROOT "/opt/irods-externals/boost1.60.0-0")
+set(BOOST_ROOT "/opt/irods-externals/boost1.67.0-0")
 set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang3.8-0)
 set(JANSSON_ROOT /opt/irods-externals/jansson2.7-0)
 
