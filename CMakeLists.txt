@@ -20,6 +20,9 @@ set(MSI_RELEASE_VERSION "2.0.0")
 set(IRODS_VERSION $ENV{IRODS_VERSION}) # Get iRODS version from environment
 #set(IRODS_VERSION "4.2.4")            # Or specificy iRODS version manually
 
+# Check installed iRODS version
+find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
+message(STATUS "Building microservices version ${MSI_RELEASE_VERSION} for irods-server version ${IRODS_VERSION}")
 
 # Set additional modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
@@ -57,12 +60,9 @@ set(CMAKE_CXX_COMPILER ${IRODS_EXTERNALS_FULLPATH_CLANG}/bin/clang++)
 # Set the project's name and which compiler(s) to use
 project(irods-microservices C CXX)
 
-# Check installed iRODS version
-find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
-message(STATUS "Building microservices version ${MSI_RELEASE_VERSION} for irods-server version ${IRODS_VERSION}")
-
 # Include the header files into the project
 include_directories("${IRODS_EXTERNALS_FULLPATH_CLANG}/include/c++/v1")
+include_directories("/usr/include/irods")
 
 find_package(Boost REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
@@ -76,9 +76,6 @@ include_directories(SYSTEM ${JANSSON_INCLUDE_DIRS})
 find_package(Rabbitmq REQUIRED)
 include_directories(SYSTEM ${RABBITMQ_INCLUDE_DIRS} )
 
-include_directories("/usr/include/irods")
-
-
 # Generate the shared Library (= binary) from the source code
 # Note: unlike an Executable, a library does not contain a main method. It just contains the classes
 add_library(msi_getenv                SHARED msi_getenv/msi_getenv.cpp)
@@ -86,7 +83,7 @@ add_library(msi_http_send_file        SHARED msi_http_send_file/msi_http_send_fi
 add_library(msi_json_arrayops         SHARED msi_json_arrayops/libmsi_json_arrayops.cpp)
 add_library(msi_json_objops           SHARED msi_json_objops/libmsi_json_objops.cpp)
 add_library(msi_time_ts2str           SHARED msi_time_ts2str/libmsi_time_ts2str.cpp)
-add_library(msi_unmount               SHARED msi_unmount/unmount.cpp)
+# add_library(msi_unmount               SHARED msi_unmount/unmount.cpp)
 add_library(msiput_dataobj_or_coll    SHARED msiput_dataobj_or_coll/libmsiput_dataobj_or_coll.cpp)
 add_library(msi_amqp_basic_publish    SHARED msi_amqp_basic_publish/msi_amqp_basic_publish.cpp)
 add_library(msi_set_avu               SHARED msi_set_avu/msi_set_avu.cpp)
@@ -99,7 +96,7 @@ target_link_libraries(msi_http_send_file      LINK_PUBLIC ${Boost_LIBRARIES} ${C
 target_link_libraries(msi_json_arrayops       LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(msi_json_objops         LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(msi_time_ts2str         LINK_PUBLIC ${Boost_LIBRARIES})
-target_link_libraries(msi_unmount             LINK_PUBLIC ${Boost_LIBRARIES})
+# target_link_libraries(msi_unmount             LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msiput_dataobj_or_coll  LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msi_amqp_basic_publish  LINK_PUBLIC ${Boost_LIBRARIES} ${RABBITMQ_LIBRARIES})
 target_link_libraries(msi_set_avu             LINK_PUBLIC ${Boost_LIBRARIES})
@@ -115,7 +112,7 @@ install(TARGETS
         msi_json_arrayops
         msi_json_objops
         msi_time_ts2str
-        msi_unmount
+#        msi_unmount
         msiput_dataobj_or_coll
         msi_amqp_basic_publish
         msi_set_avu
