@@ -57,7 +57,7 @@ set(CMAKE_CXX_COMPILER ${IRODS_EXTERNALS_FULLPATH_CLANG}/bin/clang++)
 project(irods-microservices C CXX)
 
 # Check installed iRODS version
-find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
+#find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
 message(STATUS "Building microservices version ${MSI_RELEASE_VERSION} for irods-server version ${IRODS_VERSION}")
 
 # Include the header files into the project
