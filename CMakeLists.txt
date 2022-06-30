@@ -10,7 +10,7 @@
 # irods-externals
 
 # Specify the minimum version for CMake
-cmake_minimum_required(VERSION 3.3.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.7.0 FATAL_ERROR)
 
 # Set global CMAKE variables
 # Note: Some of the include dirs (like CURL) can automatically be found by CMake at the 'include_directories' step and do not have to be set here.
@@ -25,15 +25,17 @@ set(IRODS_VERSION $ENV{IRODS_VERSION}) # Get iRODS version from environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
 
 # Set some paths for dependencies from irods-externals
-set(BOOST_ROOT "/opt/irods-externals/boost1.67.0-0")
-set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang6.0-0)
+set(BOOST_ROOT "/opt/irods-externals/boost1.78.0-0")
+set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang13.0.0-0)
 
 # Set compiler options
-add_compile_options(-std=c++14
+add_compile_options(-std=c++20
                     -Os
                     -fPIC
                     -DRODS_SERVER
                     -nostdinc++
+                    -I/opt/irods-externals/json3.10.4-0/include
+                    -I/opt/irods-externals/fmt8.1.1-0/include
                     -Wall
                     -Wextra
                     -Wpedantic
@@ -184,4 +186,3 @@ add_custom_target(rit-package
 )
 
 # }}}
-
