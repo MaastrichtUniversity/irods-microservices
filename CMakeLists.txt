@@ -85,14 +85,12 @@ add_library(msi_getenv                SHARED msi_getenv/msi_getenv.cpp)
 add_library(msi_json_arrayops         SHARED msi_json_arrayops/libmsi_json_arrayops.cpp)
 add_library(msi_json_objops           SHARED msi_json_objops/libmsi_json_objops.cpp)
 #add_library(msi_time_ts2str           SHARED msi_time_ts2str/libmsi_time_ts2str.cpp)
-#add_library(msiput_dataobj_or_coll    SHARED msiput_dataobj_or_coll/libmsiput_dataobj_or_coll.cpp)
 
 # Link the generated library to dependency libraries
 target_link_libraries(msi_getenv              LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msi_json_arrayops       LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(msi_json_objops         LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
 #target_link_libraries(msi_time_ts2str         LINK_PUBLIC ${Boost_LIBRARIES})
-#target_link_libraries(msiput_dataobj_or_coll  LINK_PUBLIC ${Boost_LIBRARIES})
 
 
 # Set the location for library installation
@@ -102,8 +100,6 @@ install(TARGETS
         msi_json_arrayops
         msi_json_objops
 #        msi_time_ts2str
-       # msi_unmount
-#        msiput_dataobj_or_coll
         DESTINATION
         /usr/lib/irods/plugins/microservices)
 
