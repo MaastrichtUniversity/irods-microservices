@@ -73,33 +73,25 @@ include_directories(SYSTEM ${CURL_INCLUDE_DIRS})
 find_package(Jansson REQUIRED)
 include_directories(SYSTEM ${JANSSON_INCLUDE_DIRS})
 
-find_package(Rabbitmq REQUIRED)
-include_directories(SYSTEM ${RABBITMQ_INCLUDE_DIRS} )
-
 include_directories("/usr/include/irods")
 
 
 # Generate the shared Library (= binary) from the source code
 # Note: unlike an Executable, a library does not contain a main method. It just contains the classes
-add_library(msi_getenv                SHARED msi_getenv/msi_getenv.cpp)
+
 add_library(msi_json_arrayops         SHARED msi_json_arrayops/libmsi_json_arrayops.cpp)
 add_library(msi_json_objops           SHARED msi_json_objops/libmsi_json_objops.cpp)
-#add_library(msi_time_ts2str           SHARED msi_time_ts2str/libmsi_time_ts2str.cpp)
 
 # Link the generated library to dependency libraries
-target_link_libraries(msi_getenv              LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(msi_json_arrayops       LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(msi_json_objops         LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
-#target_link_libraries(msi_time_ts2str         LINK_PUBLIC ${Boost_LIBRARIES})
 
 
 # Set the location for library installation
 install(CODE "MESSAGE(\"Installing microservices to iRODS plugins folder...\")")
 install(TARGETS
-        msi_getenv
         msi_json_arrayops
         msi_json_objops
-#        msi_time_ts2str
         DESTINATION
         /usr/lib/irods/plugins/microservices)
 
