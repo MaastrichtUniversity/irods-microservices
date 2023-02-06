@@ -25,9 +25,8 @@ set(IRODS_VERSION $ENV{IRODS_VERSION}) # Get iRODS version from environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
 
 # Set some paths for dependencies from irods-externals
-set(BOOST_ROOT "/opt/irods-externals/boost1.60.0-0")
-set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang3.8-0)
-set(JANSSON_ROOT /opt/irods-externals/jansson2.7-0)
+set(BOOST_ROOT "/opt/irods-externals/boost1.67.0-0")
+set(IRODS_EXTERNALS_FULLPATH_CLANG /opt/irods-externals/clang6.0-0)
 
 # Set compiler options
 add_compile_options(-std=c++14
@@ -58,11 +57,12 @@ set(CMAKE_CXX_COMPILER ${IRODS_EXTERNALS_FULLPATH_CLANG}/bin/clang++)
 project(irods-microservices C CXX)
 
 # Check installed iRODS version
-find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
+#find_package(IRODS ${IRODS_VERSION} EXACT REQUIRED)
 message(STATUS "Building microservices version ${MSI_RELEASE_VERSION} for irods-server version ${IRODS_VERSION}")
 
 # Include the header files into the project
 include_directories("${IRODS_EXTERNALS_FULLPATH_CLANG}/include/c++/v1")
+include_directories("/usr/include/irods")
 
 find_package(Boost REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
@@ -78,12 +78,14 @@ include_directories("/usr/include/irods")
 
 # Generate the shared Library (= binary) from the source code
 # Note: unlike an Executable, a library does not contain a main method. It just contains the classes
+
 add_library(msi_json_arrayops         SHARED msi_json_arrayops/libmsi_json_arrayops.cpp)
 add_library(msi_json_objops           SHARED msi_json_objops/libmsi_json_objops.cpp)
 
 # Link the generated library to dependency libraries
 target_link_libraries(msi_json_arrayops       LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(msi_json_objops         LINK_PUBLIC ${JANSSON_LIBRARIES} ${Boost_LIBRARIES})
+
 
 # Set the location for library installation
 install(CODE "MESSAGE(\"Installing microservices to iRODS plugins folder...\")")
@@ -106,7 +108,7 @@ set(CPACK_MONOLITHIC_INSTALL 1)
 set(CPACK_CMAKE_GENERATOR "Unix Makefiles")
 
 # Run custom CMake module to detect OS family
-include(${CMAKE_MODULE_PATH}/DetectOS.cmake)
+include(/microservices/CMakeModules/DetectOS.cmake)
 message(STATUS "Found Linux distro ${DETECTED_OS}")
 
 # Determine which type of package should be generated
